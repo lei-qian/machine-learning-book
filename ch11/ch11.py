@@ -3,6 +3,8 @@
 
 import sys
 from python_environment_check import check_packages
+from scipy.io import arff
+import pandas as pd
 from sklearn.datasets import fetch_openml
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
@@ -103,6 +105,32 @@ check_packages(d)
 
 
 
+# Load the ARFF file
+data, meta = arff.loadarff('dataset_554.arff')
+
+
+
+
+
+n = len(data)
+m = len(data[0])-1
+X = np.zeros((n, m), dtype = np.uint8)
+y = np.zeros(n, dtype=np.uint8)
+
+for i, row in enumerate(data):
+    X[i] = [row[j] for j in range(m)]
+    y[i] = row[m]
+
+
+
+
+X.shape, y.shape
+
+
+
+
+'''
+
 
 X, y = fetch_openml('mnist_784', version=1, return_X_y=True)
 X = X.values
@@ -110,6 +138,7 @@ y = y.astype(int).values
 
 print(X.shape)
 print(y.shape)
+'''
 
 
 # Normalize to [-1, 1] range:
@@ -408,7 +437,8 @@ def train(model, X_train, y_train, X_valid, y_valid, num_epochs,
             a_h, a_out = model.forward(X_train_mini)
 
             #### Compute gradients ####
-            d_loss__d_w_out, d_loss__d_b_out, d_loss__d_w_h, d_loss__d_b_h =                 model.backward(X_train_mini, a_h, a_out, y_train_mini)
+            d_loss__d_w_out, d_loss__d_b_out, d_loss__d_w_h, d_loss__d_b_h = \
+                model.backward(X_train_mini, a_h, a_out, y_train_mini)
 
             #### Update weights ####
             model.weight_h -= learning_rate * d_loss__d_w_h
